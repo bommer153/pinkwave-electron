@@ -1,0 +1,167 @@
+@import 'tailwindcss';
+@import '@heroui/styles';
+
+/* Pinkwave palette as Tailwind tokens: bg-pw-base, text-pw-pink, etc. */
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --color-pw-base: #09090b;
+  --color-pw-sidebar: #111114;
+  --color-pw-main: #0d0d10;
+  --color-pw-card: #18181d;
+  --color-pw-elevated: #222229;
+  --color-pw-pink: #ff4fa3;
+  --color-pw-pink-soft: #ff85c2;
+  --color-pw-pink-hot: #ff2d95;
+  --color-pw-text: #ffffff;
+  --color-pw-text-2: #a1a1aa;
+  --color-pw-muted: #71717a;
+}
+
+/* Point HeroUI's own tokens at the palette so its components match. */
+.dark,
+[data-theme='dark'] {
+  --background: #09090b;
+  --foreground: #ffffff;
+  --surface: #18181d;
+  --surface-secondary: #222229;
+  --accent: #ff4fa3;
+  --accent-hover: #ff2d95;
+  --accent-foreground: #ffffff;
+  --focus: #ff85c2;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-pw-base text-pw-text font-sans antialiased select-none;
+}
+
+/* Registered so it can be transitioned: the fill glides between the player's 250ms position ticks. */
+@property --pct {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 0%;
+}
+
+/* Native range input styled as the pink progress/volume bar; --pct drives the fill. */
+.pw-range {
+  transition: --pct 250ms linear;
+  appearance: none;
+  height: 4px;
+  border-radius: 9999px;
+  cursor: pointer;
+  background: linear-gradient(to right, var(--color-pw-text) var(--pct, 0%), #3f3f46 var(--pct, 0%));
+}
+.pw-range:hover:not(:disabled),
+.pw-range:focus-visible {
+  background: linear-gradient(
+    to right,
+    var(--color-pw-pink-hot) 0%,
+    var(--color-pw-pink) var(--pct, 0%),
+    #3f3f46 var(--pct, 0%)
+  );
+}
+.pw-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  background: #fff;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.pw-range:hover:not(:disabled)::-webkit-slider-thumb,
+.pw-range:focus-visible::-webkit-slider-thumb {
+  opacity: 1;
+  box-shadow: 0 0 10px var(--color-pw-pink);
+}
+/* While dragging, follow the pointer exactly. */
+.pw-range:active {
+  transition: none;
+}
+.pw-range:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.pw-eq-bar {
+  height: 100%;
+  transform-origin: bottom;
+  animation: pw-eq 0.9s ease-in-out infinite;
+}
+@keyframes pw-eq {
+  0%,
+  100% {
+    transform: scaleY(0.3);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.pw-page-in {
+  animation: pw-fade-up 0.25s ease-out;
+}
+.pw-art-in {
+  animation: pw-art-in 0.35s ease-out;
+}
+@keyframes pw-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+@keyframes pw-art-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+}
+
+.pw-heart-pop {
+  animation: pw-heart-pop 0.45s cubic-bezier(0.17, 0.89, 0.32, 1.49);
+  filter: drop-shadow(0 0 6px var(--color-pw-pink));
+}
+@keyframes pw-heart-pop {
+  0% {
+    transform: scale(0.6);
+  }
+  50% {
+    transform: scale(1.35);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pw-heart-pop,
+  .pw-page-in,
+  .pw-art-in {
+    animation: none;
+  }
+  .pw-range {
+    transition: none;
+  }
+  .pw-eq-bar {
+    animation: none;
+    transform: scaleY(0.6);
+  }
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #3f3f46;
+  border: 3px solid transparent;
+  border-radius: 9999px;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #52525b;
+}

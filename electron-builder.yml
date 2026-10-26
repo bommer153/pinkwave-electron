@@ -1,0 +1,18 @@
+appId: com.pinkwave.app
+productName: Pinkwave
+directories:
+  output: release
+  buildResources: resources
+files:
+  - out/**
+  - resources/**
+  - package.json
+# Tray/window icons are read from disk at runtime.
+asarUnpack:
+  - resources/**
+win:
+  target: nsis
+  icon: resources/icon.png
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
